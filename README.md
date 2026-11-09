@@ -58,7 +58,8 @@ Requires the .NET 9 SDK.
 ```powershell
 .\scripts\fetch-ffmpeg.ps1          # downloads the bundled FFmpeg into src\WinKame\tools\ffmpeg (once)
 dotnet build
-dotnet test
+dotnet test                         # full suite (~1 min)
+.\scripts\test-fast.ps1             # skips the slow tests, prints only the summary (~15 s)
 dotnet run --project src\WinKame
 ```
 

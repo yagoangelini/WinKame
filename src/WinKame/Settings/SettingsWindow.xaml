@@ -204,6 +204,10 @@
                         <CheckBox x:Name="SendTo" Content="{l:T 'Menu Enviar para › WinKame'}" Margin="0,12,0,0" />
                         <TextBlock x:Name="SendToHint" TextWrapping="Wrap" Opacity="0.65" Margin="26,4,0,0" FontSize="12"
                                    Text="{l:T 'Bom para seleções grandes: envia todos os arquivos de uma vez.'}" />
+                        <CheckBox x:Name="MailHandler" Content="{l:T 'Oferecer o WinKame como app de e-mail'}" Margin="0,12,0,0" />
+                        <TextBlock TextWrapping="Wrap" Opacity="0.65" Margin="26,4,0,0" FontSize="12"
+                                   Text="{l:T 'Ao clicar num link de e-mail, o endereço vai para a área de transferência em vez de abrir o Outlook. O Windows só deixa você escolher: depois de salvar, selecione o WinKame em Aplicativos padrão.'}" />
+                        <Button Content="{l:T 'Abrir Aplicativos padrão do Windows'}" Margin="26,8,0,0" HorizontalAlignment="Left" Click="MailDefault_Click" />
                         <TextBlock x:Name="IntegrationNote" Text="{l:T 'Tudo é registrado só para o seu usuário, sem precisar de administrador.'}" Opacity="0.65" Margin="0,20,0,0" TextWrapping="Wrap" />
                     </StackPanel>
                 </ScrollViewer>

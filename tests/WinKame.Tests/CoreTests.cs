@@ -125,6 +125,7 @@ public class ImageTests
     }
 
     [Fact]
+    [Trait("Category", "Slow")]
     public void CompressHitsTargetSize()
     {
         using var t = new TempDir();
@@ -222,6 +223,7 @@ public class PdfTests
     }
 
     [Fact]
+    [Trait("Category", "Slow")]
     public async Task CompressNeverGrows()
     {
         using var t = new TempDir();
@@ -234,6 +236,7 @@ public class PdfTests
     }
 
     [Fact]
+    [Trait("Category", "Slow")]
     public async Task CompressShrinksLosslessImages()
     {
         using var t = new TempDir();
@@ -284,6 +287,7 @@ public class OtherFormatTests
     }
 
     [Fact]
+    [Trait("Category", "Slow")]
     public async Task Spreadsheets()
     {
         using var t = new TempDir();
@@ -556,6 +560,7 @@ public class TimeTests
     }
 }
 
+[Trait("Category", "Slow")]
 public class MediaTests
 {
     private readonly Xunit.Abstractions.ITestOutputHelper output;
@@ -666,5 +671,23 @@ public class MediaTests
         var tagged = await MediaEngine.SetTagsAsync(mp3, new Dictionary<string, string> { ["artist"] = "Teste" }, false, null, default);
         Assert.Equal("Teste", (await MediaEngine.ProbeAsync(tagged)).Tags["artist"]);
         Assert.True((await MediaEngine.WaveformAsync(wav, 400, 80, "#FF8A00", default)).Length > 100);
+    }
+}
+
+public class MailtoTests
+{
+    [Theory]
+    [InlineData("mailto:ana@x.com", "ana@x.com")]
+    [InlineData("MAILTO:ana@x.com?subject=Oi%20tudo&body=x", "ana@x.com")]
+    [InlineData("mailto:ana@x.com,bia@y.com?cc=c@z.com", "ana@x.com|bia@y.com")]
+    [InlineData("mailto:ana+news@x.com", "ana+news@x.com")]
+    [InlineData("mailto:%22Ana%22%20%3Cana@x.com%3E", "\"Ana\" <ana@x.com>")]
+    [InlineData("mailto:?to=ana@x.com&to=bia@y.com", "ana@x.com|bia@y.com")]
+    [InlineData("\"mailto:ana@x.com\"", "ana@x.com")]
+    [InlineData("mailto:", "")]
+    [InlineData("https://x.com", "")]
+    public void ReadsRecipients(string link, string expected)
+    {
+        Assert.Equal(expected, string.Join("|", WinKame.Core.MailtoLink.Recipients(link)));
     }
 }

@@ -51,6 +51,8 @@ internal static class FileOps
     public static void CopyPaths(IReadOnlyList<string> paths) =>
         Retry(() => Clipboard.SetText(string.Join(Environment.NewLine, paths)));
 
+    public static void CopyText(string text) => Retry(() => Clipboard.SetText(text));
+
     private static void Retry(Action a)
     {
         for (var i = 0; ; i++)

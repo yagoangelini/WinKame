@@ -221,10 +221,18 @@ public partial class App : Application
                 break;
             case "--background":
                 break;
+            case "--mailto":
+                CopyMailRecipients(args.Length > 1 ? args[1] : "");
+                break;
             case "--quit":
                 Quit();
                 break;
             default:
+                if (args[0].StartsWith("mailto:", StringComparison.OrdinalIgnoreCase))
+                {
+                    CopyMailRecipients(args[0]);
+                    break;
+                }
                 // Files dropped on the exe or passed directly.
                 if (paths.Count > 0)
                 {
@@ -309,6 +317,20 @@ public partial class App : Application
         win.Show();
         Native.ForceForeground(new WindowInteropHelper(win).Handle);
         win.Activate();
+    }
+
+    /// <summary>WinKame as the email app: a mailto: link copies its recipients instead of opening a mail program.</summary>
+    private void CopyMailRecipients(string link)
+    {
+        var to = MailtoLink.Recipients(link);
+        if (to.Count == 0)
+        {
+            Toast("E-mail", T("Esse link de e-mail não tem destinatário."));
+            return;
+        }
+        var text = string.Join("; ", to);
+        Shell.FileOps.CopyText(text);
+        Toast(to.Count == 1 ? T("Endereço de e-mail copiado") : T("Endereços de e-mail copiados"), text);
     }
 
     /// <summary>A short message in the job card, for actions that finish instantly.</summary>

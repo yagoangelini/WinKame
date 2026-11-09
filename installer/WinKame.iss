@@ -123,6 +123,9 @@ begin
     RegDeleteKeyIncludingSubkeys(HKCU, 'Software\Classes\*\shell\WinKame');
     RegDeleteKeyIncludingSubkeys(HKCU, 'Software\Classes\Directory\shell\WinKame');
     RegDeleteValue(HKCU, 'Software\Microsoft\Windows\CurrentVersion\Run', 'WinKame');
+    RegDeleteKeyIncludingSubkeys(HKCU, 'Software\Classes\WinKame.MailTo');
+    RegDeleteKeyIncludingSubkeys(HKCU, 'Software\WinKame\Capabilities');
+    RegDeleteValue(HKCU, 'Software\RegisteredApplications', 'WinKame');
     DeleteFile(ExpandConstant('{usersendto}\WinKame.lnk'));
   end;
 end;

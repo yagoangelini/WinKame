@@ -87,6 +87,61 @@ internal static partial class ShellIntegration
         }
     }
 
+    private const string MailProgId = "WinKame.MailTo";
+    private const string CapabilitiesKey = @"Software\WinKame\Capabilities";
+
+    /// <summary>WinKame is offered as an email app (Windows Settings › Default apps). Windows only lets the user pick it.</summary>
+    public static bool MailHandlerRegistered
+    {
+        get
+        {
+            if (IsPackaged) return true; // declared in the package manifest
+            using var k = Registry.CurrentUser.OpenSubKey($@"Software\Classes\{MailProgId}\shell\open\command");
+            return k?.GetValue(null) is string s && s.Contains(Exe, StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
+    public static void SetMailHandler(bool on)
+    {
+        if (IsPackaged) return;
+        if (on)
+        {
+            using (var k = Registry.CurrentUser.CreateSubKey($@"Software\Classes\{MailProgId}"))
+            {
+                k.SetValue(null, "URL:MailTo Protocol");
+                k.SetValue("URL Protocol", "");
+                k.SetValue("FriendlyTypeName", T("WinKame: copiar o endereço de e-mail"));
+                using var icon = k.CreateSubKey("DefaultIcon");
+                icon.SetValue(null, $"\"{Exe}\",0");
+                using var cmd = k.CreateSubKey(@"shell\open\command");
+                cmd.SetValue(null, $"\"{Exe}\" --mailto \"%1\"");
+            }
+            using (var c = Registry.CurrentUser.CreateSubKey(CapabilitiesKey))
+            {
+                c.SetValue("ApplicationName", "WinKame");
+                c.SetValue("ApplicationDescription", T("Copia o endereço dos links de e-mail em vez de abrir um programa de e-mail."));
+                using var u = c.CreateSubKey("URLAssociations");
+                u.SetValue("mailto", MailProgId);
+            }
+            using var apps = Registry.CurrentUser.CreateSubKey(@"Software\RegisteredApplications");
+            apps.SetValue("WinKame", CapabilitiesKey);
+        }
+        else
+        {
+            Registry.CurrentUser.DeleteSubKeyTree($@"Software\Classes\{MailProgId}", throwOnMissingSubKey: false);
+            Registry.CurrentUser.DeleteSubKeyTree(CapabilitiesKey, throwOnMissingSubKey: false);
+            using var apps = Registry.CurrentUser.OpenSubKey(@"Software\RegisteredApplications", writable: true);
+            apps?.DeleteValue("WinKame", throwOnMissingValue: false);
+        }
+    }
+
+    /// <summary>Opens Windows Settings at WinKame's default-app page (or the general page in the Store build).</summary>
+    public static void OpenDefaultAppsSettings()
+    {
+        var uri = IsPackaged ? "ms-settings:defaultapps" : "ms-settings:defaultapps?registeredAppUser=WinKame";
+        System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(uri) { UseShellExecute = true });
+    }
+
     /// <summary>True when running as the MSIX package (Microsoft Store build).</summary>
     public static bool IsPackaged { get; } = DetectPackage();
 

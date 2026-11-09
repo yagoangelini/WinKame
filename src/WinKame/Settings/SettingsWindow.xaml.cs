@@ -106,6 +106,8 @@ public partial class SettingsWindow : Window
         StartWithWindows.IsChecked = ShellIntegration.StartupInstalled;
         ContextMenuCheck.IsChecked = ShellIntegration.ContextMenuInstalled;
         SendTo.IsChecked = ShellIntegration.SendToInstalled;
+        MailHandler.IsChecked = ShellIntegration.MailHandlerRegistered;
+        if (ShellIntegration.IsPackaged) MailHandler.Visibility = Visibility.Collapsed;
         if (ShellIntegration.IsPackaged)
         {
             // The Microsoft Store build can't add Explorer menus; the wheel is the way in.
@@ -402,6 +404,18 @@ public partial class SettingsWindow : Window
 
     private void Cancel_Click(object sender, RoutedEventArgs e) => Close();
 
+    private void MailDefault_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            ShellIntegration.OpenDefaultAppsSettings();
+        }
+        catch (Exception ex)
+        {
+            Ui.Error(ex.Message);
+        }
+    }
+
     private string _accent = Accent.Default;
     private string _accentAtOpen = Accent.Default;
     private bool _saved, _updatingHex;
@@ -496,6 +510,12 @@ public partial class SettingsWindow : Window
             {
                 if (ContextMenuCheck.IsChecked != ShellIntegration.ContextMenuInstalled) ShellIntegration.SetContextMenu(ContextMenuCheck.IsChecked == true);
                 if (SendTo.IsChecked != ShellIntegration.SendToInstalled) ShellIntegration.SetSendTo(SendTo.IsChecked == true);
+                if (MailHandler.IsChecked != ShellIntegration.MailHandlerRegistered)
+                {
+                    ShellIntegration.SetMailHandler(MailHandler.IsChecked == true);
+                    // Windows doesn't let apps make themselves the default: take the user to the page where they choose.
+                    if (MailHandler.IsChecked == true) ShellIntegration.OpenDefaultAppsSettings();
+                }
             }
         }
         catch (Exception ex)

@@ -8,9 +8,10 @@
 <Package
   xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
   xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+  xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3"
   xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10"
   xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
-  IgnorableNamespaces="uap desktop rescap">
+  IgnorableNamespaces="uap uap3 desktop rescap">
 
   <Identity Name="$IdentityName$" Publisher="$Publisher$" Version="$Version$" ProcessorArchitecture="x64" />
 
@@ -46,6 +47,12 @@
         <desktop:Extension Category="windows.startupTask" Executable="WinKame.exe" EntryPoint="Windows.FullTrustApplication">
           <desktop:StartupTask TaskId="WinKameStartup" Enabled="true" DisplayName="WinKame" />
         </desktop:Extension>
+        <!-- Offered as an email app: a mailto: link copies its recipients (the user picks it in Default apps). -->
+        <uap3:Extension Category="windows.protocol">
+          <uap3:Protocol Name="mailto" Parameters="--mailto &quot;%1&quot;">
+            <uap:DisplayName>WinKame</uap:DisplayName>
+          </uap3:Protocol>
+        </uap3:Extension>
       </Extensions>
     </Application>
   </Applications>
