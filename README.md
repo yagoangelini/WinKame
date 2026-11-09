@@ -25,6 +25,15 @@ Zero-click file converter for Windows 10 and 11. Drag any file, tap a key, and d
 
 Everything runs offline on the PC. The interface is in English and Portuguese and follows the Windows language.
 
+Also:
+
+- **Email links copy the address.** Pick WinKame as the email app in Windows *Default apps* (turn it on in
+  *Settings › Integration*), and clicking a `mailto:` link copies the address to the clipboard instead of opening Outlook.
+- **Your accent color.** *Settings › General* sets the wheel's highlight color, or follows the Windows accent.
+- **Shelf.** Park files while you browse, then drag them all out at once.
+
+What changed in each version: [CHANGELOG.md](CHANGELOG.md).
+
 ## Download
 
 | | |
